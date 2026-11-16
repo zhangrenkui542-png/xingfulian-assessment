@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/pay.mjs": { "maxDuration": 10 },
+    "api/pay-notify.mjs": { "maxDuration": 10 }
+  },
+  "rewrites": [
+    { "source": "/api/pay", "destination": "/api/pay.mjs" },
+    { "source": "/api/pay/notify", "destination": "/api/pay-notify.mjs" }
+  ]
+}

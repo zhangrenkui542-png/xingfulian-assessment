@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>五力创业成功率测评 | 幸赋链</title>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black: #0a0a0a;
+  --dark: #111111;
+  --gold: #c9a84c;
+  --gold-light: #e4c76b;
+  --gray: #2a2a2a;
+  --gray-light: #3a3a3a;
+  --text: #e8e4dc;
+  --text-dim: #88827a;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  background: var(--black);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.15), transparent),
+    radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.1), transparent),
+    radial-gradient(1.5px 1.5px at 50% 10%, rgba(255,255,255,0.2), transparent),
+    radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.1), transparent),
+    radial-gradient(1.5px 1.5px at 90% 40%, rgba(255,255,255,0.15), transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+.container { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; padding: 0 16px; }
+
+/* ===== Header ===== */
+.header { text-align: center; padding: 32px 0 20px; }
+.header h1 { font-size: 22px; color: var(--gold); letter-spacing: 4px; font-weight: 700; }
+.header p { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+
+/* ===== Sections ===== */
+.section { display: none; min-height: 70vh; padding-bottom: 60px; }
+.section.active { display: block; }
+
+/* ===== Landing ===== */
+.landing { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; text-align: center; }
+.landing .icon { font-size: 48px; margin-bottom: 20px; }
+.landing h2 { font-size: 26px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+.landing h2 span { color: var(--gold); }
+.landing .subtitle { font-size: 15px; color: var(--text-dim); max-width: 440px; margin-bottom: 32px; line-height: 1.8; }
+.landing .badge-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
+.landing .badge { background: var(--gray); color: var(--text-dim); padding: 6px 14px; border-radius: 20px; font-size: 12px; border: 1px solid var(--gray-light); }
+.landing .price-tag { font-size: 36px; color: var(--gold); font-weight: 700; margin-bottom: 8px; }
+.landing .price-tag small { font-size: 16px; color: var(--text-dim); font-weight: 400; text-decoration: line-through; margin-left: 8px; }
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-block; padding: 14px 48px; border: none; border-radius: 4px;
+  font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s;
+  text-decoration: none; font-family: inherit;
+}
+.btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--black); }
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.3); }
+.btn-outline { background: transparent; color: var(--text); border: 1px solid var(--gray-light); }
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+.btn-sm { padding: 10px 28px; font-size: 14px; }
+.btn-block { display: block; width: 100%; text-align: center; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+/* ===== Quiz ===== */
+.quiz-header { padding: 16px 0; }
+.quiz-header .meta { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-dim); }
+.progress-bar { width: 100%; height: 4px; background: var(--gray); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+.progress-bar .fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 2px; transition: width 0.4s ease; }
+.dimension-tag { display: inline-block; padding: 4px 12px; border-radius: 3px; font-size: 12px; background: var(--gray); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+.question-card { background: var(--dark); border: 1px solid var(--gray); border-radius: 8px; padding: 24px; margin-top: 16px; }
+.question-card .q-number { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.question-card .q-text { font-size: 17px; font-weight: 500; line-height: 1.7; margin-bottom: 20px; }
+.scale { display: flex; gap: 8px; justify-content: space-between; }
+.scale-btn {
+  flex: 1; aspect-ratio: 1; max-width: 56px; border-radius: 50%;
+  border: 1px solid var(--gray-light); background: transparent; color: var(--text-dim);
+  font-size: 14px; cursor: pointer; transition: all 0.2s;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.scale-btn .label { font-size: 9px; margin-top: 2px; }
+.scale-btn:hover { border-color: var(--gold); color: var(--gold); }
+.scale-btn.selected { background: var(--gold); border-color: var(--gold); color: var(--black); font-weight: 700; }
+.scale-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-top: 6px; padding: 0 4px; }
+.nav-buttons { display: flex; gap: 12px; margin-top: 24px; }
+.nav-buttons .btn { flex: 1; }
+
+/* ===== Paywall ===== */
+.paywall { text-align: center; padding: 40px 0; }
+.paywall .lock-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.6; }
+.paywall h3 { font-size: 22px; color: var(--text); margin-bottom: 8px; }
+.paywall .desc { color: var(--text-dim); font-size: 14px; margin-bottom: 24px; }
+.paywall .price-box { background: var(--dark); border: 1px solid var(--gold); border-radius: 8px; padding: 24px; margin-bottom: 24px; }
+.paywall .price-box .amount { font-size: 42px; color: var(--gold); font-weight: 700; }
+.paywall .price-box .amount small { font-size: 18px; }
+.paywall .price-box .note { font-size: 12px; color: var(--text-dim); margin-top: 8px; }
+.paywall .qrcode-box { background: #fff; display: inline-block; padding: 16px; border-radius: 8px; margin-bottom: 16px; position: relative; }
+.paywall .qrcode-box img { width: 200px; height: auto; display: block; }
+.paywall .qrcode-box .loading-qr { width:200px;height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#999;font-size:13px; }
+.paywall .pay-status { font-size: 13px; padding: 12px; border-radius: 6px; margin: 12px 0; }
+.paywall .pay-status.waiting { background: var(--gray); color: var(--text-dim); }
+.paywall .pay-status.success { background: rgba(39,174,96,0.15); color: #2ecc71; border: 1px solid rgba(39,174,96,0.3); }
+.paywall .pay-status.failed { background: rgba(192,57,43,0.15); color: #e74c3c; border: 1px solid rgba(192,57,43,0.3); }
+.pay-status .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.1); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-right: 6px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== Report ===== */
+.report { padding: 20px 0; }
+.report .hero { text-align: center; margin-bottom: 32px; }
+.report .hero h2 { font-size: 24px; color: var(--gold); margin-bottom: 8px; }
+.report .hero p { color: var(--text-dim); font-size: 14px; }
+.report .score-total { text-align: center; margin-bottom: 32px; }
+.report .score-total .number { font-size: 56px; font-weight: 700; color: var(--gold); }
+.report .score-total .label { font-size: 14px; color: var(--text-dim); }
+.report .score-total .level { font-size: 16px; margin-top: 4px; }
+.chart-wrap { background: var(--dark); border: 1px solid var(--gray); border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+.chart-wrap h3 { font-size: 15px; color: var(--text-dim); margin-bottom: 12px; text-align: center; }
+#radarChart { width: 100%; max-width: 360px; height: auto; display: block; margin: 0 auto; }
+.dimension-scores { display: grid; gap: 12px; margin-bottom: 24px; }
+.dim-item { background: var(--dark); border: 1px solid var(--gray); border-radius: 6px; padding: 14px 16px; }
+.dim-item .dim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.dim-item .dim-name { font-size: 14px; font-weight: 600; }
+.dim-item .dim-score { font-size: 18px; font-weight: 700; color: var(--gold); }
+.dim-item .dim-bar { height: 3px; background: var(--gray); border-radius: 2px; overflow: hidden; }
+.dim-item .dim-bar .fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 2px; }
+.dim-item .dim-desc { font-size: 12px; color: var(--text-dim); margin-top: 6px; }
+.suggestions { background: var(--dark); border: 1px solid var(--gray); border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+.suggestions h3 { font-size: 16px; color: var(--gold); margin-bottom: 12px; }
+.suggestions p { font-size: 13px; color: var(--text-dim); line-height: 1.8; margin-bottom: 8px; }
+.suggestions ul { padding-left: 16px; }
+.suggestions li { font-size: 13px; color: var(--text-dim); margin-bottom: 6px; line-height: 1.6; }
+.upsell { background: linear-gradient(135deg, var(--dark), var(--gray)); border: 1px solid var(--gold); border-radius: 8px; padding: 24px; text-align: center; margin: 24px 0; }
+.upsell h3 { font-size: 18px; color: var(--gold); margin-bottom: 8px; }
+.upsell p { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; line-height: 1.7; }
+.upsell .price { font-size: 28px; color: var(--text); font-weight: 700; margin-bottom: 16px; }
+.footer-actions { text-align: center; padding: 20px 0 40px; }
+.footer-actions .btn { margin: 6px; }
+.toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--gold); color: var(--black); padding: 12px 24px; border-radius: 6px; font-size: 14px; font-weight: 600; opacity: 0; transition: all 0.4s; z-index: 100; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 480px) {
+  .container { padding: 0 12px; }
+  .landing h2 { font-size: 22px; }
+  .question-card { padding: 16px; }
+  .question-card .q-text { font-size: 15px; }
+  .scale-btn { max-width: 48px; font-size: 12px; }
+  .scale-btn .label { font-size: 8px; }
+  .report .score-total .number { font-size: 42px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>✦ 幸赋链</h1>
+    <p>超级个体创业联盟 · 科学创业导航</p>
+  </div>
+
+  <!-- ===== LANDING ===== -->
+  <div id="section-landing" class="section active">
+    <div class="landing">
+      <div class="icon">🚀</div>
+      <h2>测一测你的<span>创业成功率</span></h2>
+      <p class="subtitle">
+        基于愿力、业力、心力、能力、自愈力五大维度<br>
+        200道科学题库 × AI智能分析<br>
+        15分钟，看清你的创业底牌
+      </p>
+      <div class="badge-row">
+        <span class="badge">5维测评</span>
+        <span class="badge">60道精选题</span>
+        <span class="badge">AI报告</span>
+        <span class="badge">15分钟</span>
+      </div>
+      <div class="price-tag">¥19.9 <small>¥99</small></div>
+      <p style="font-size:12px;color:var(--text-dim);margin-bottom:24px;">一杯咖啡钱，看清你的创业底牌</p>
+      <button class="btn btn-gold" onclick="startQuiz()">开始测评 →</button>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:16px;">已完成 <span id="total-test-count">0</span> 份测评</p>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="section-quiz" class="section">
+    <div class="quiz-header">
+      <div class="meta">
+        <span class="dimension-tag" id="current-dim-label">愿力</span>
+        <span id="question-progress">1 / 60</span>
+      </div>
+      <div class="progress-bar"><div class="fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="question-card" id="question-card">
+      <div class="q-number" id="q-number">第 1 题</div>
+      <div class="q-text" id="q-text">加载中...</div>
+      <div class="scale" id="scale-buttons">
+        <button class="scale-btn" data-v="1" onclick="selectAnswer(1)">1<span class="label">不符</span></button>
+        <button class="scale-btn" data-v="2" onclick="selectAnswer(2)">2</button>
+        <button class="scale-btn" data-v="3" onclick="selectAnswer(3)">3<span class="label">一般</span></button>
+        <button class="scale-btn" data-v="4" onclick="selectAnswer(4)">4</button>
+        <button class="scale-btn" data-v="5" onclick="selectAnswer(5)">5<span class="label">符合</span></button>
+      </div>
+      <div class="scale-labels"><span>完全不符合</span><span>非常符合</span></div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-outline btn-sm" onclick="prevQuestion()" id="prev-btn" disabled>← 上一题</button>
+      <button class="btn btn-gold btn-sm" onclick="nextQuestion()" id="next-btn">下一题 →</button>
+    </div>
+  </div>
+
+  <!-- ===== PAYWALL ===== -->
+  <div id="section-paywall" class="section">
+    <div class="paywall">
+      <div class="lock-icon">🔒</div>
+      <h3>你的测评报告已生成</h3>
+      <p class="desc" id="paywall-desc">支付 ¥19.9 即刻解锁完整报告</p>
+
+      <div class="price-box">
+        <div class="amount"><small>¥</small>19.9</div>
+        <div class="note">一杯咖啡钱，换一份创业体检报告</div>
+      </div>
+
+      <!-- ===== 静态收款码（人工确认收款模式）===== -->
+      <!-- ✅ 已替换正式收款码（2026-11-17）：/static/images/qrcode_pay.png（董事长确认的微信商户收款码） -->
+      <div id="qrcode-area" style="display:none;">
+        <div class="qrcode-box">
+          <img id="qrcode-img" src="static/images/qrcode_pay.png" alt="微信收款码">
+        </div>
+        <p style="font-size:13px;color:var(--text-dim);margin-top:12px;">请用微信扫码支付 ¥19.9，支付后点击下方按钮解锁报告</p>
+        <div class="wechat-line" style="margin-top:10px;font-size:14px;">
+          支付遇到问题？加微信：<strong id="wechat-id">XFL18117903163</strong>
+        </div>
+        <button class="btn btn-gold btn-block" onclick="unlockReport()" style="margin-top:14px;">
+          我已支付 ¥19.9，解锁报告 →
+        </button>
+      </div>
+
+      <!-- Pay Button -->
+      <div id="pay-btn-area">
+        <button class="btn btn-gold btn-block" id="btn-create-pay" onclick="showPayQrcode()">
+          微信支付 ¥19.9 解锁报告 →
+        </button>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:12px;">微信扫码支付 · 人工确认收款</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== REPORT ===== -->
+  <div id="section-report" class="section">
+    <div class="report">
+      <div class="hero">
+        <h2>✦ 你的创业五力报告</h2>
+        <p>基于你的 60 题测评结果生成的个性化分析</p>
+      </div>
+      <div class="score-total">
+        <div class="number" id="total-score">0</div>
+        <div class="label">创业成功综合指数</div>
+        <div class="level" id="score-level">加载中...</div>
+      </div>
+      <div class="chart-wrap">
+        <h3>五维能力雷达图</h3>
+        <canvas id="radarChart" width="360" height="360"></canvas>
+      </div>
+      <div class="dimension-scores" id="dim-scores-container"></div>
+      <div class="suggestions" id="suggestions-container">
+        <h3>💡 AI诊断建议</h3>
+        <div id="suggestion-text"></div>
+      </div>
+      <div class="upsell">
+        <h3>🎯 你的下一步：成为超级个体</h3>
+        <p>这份报告只是起点。幸赋链699标准化课程体系<br>用12大模块48课时，帮你从测评到落地。</p>
+        <div class="price">¥699 <small style="font-size:14px;color:var(--text-dim);">原价 ¥1,999</small></div>
+        <p style="font-size:13px;color:var(--text-dim);margin-bottom:16px;">扫码添加企业微信，了解详细课程信息</p>
+        <div style="background:#fff;display:inline-block;padding:8px;border-radius:8px;margin-bottom:12px;">
+          <img src="static/images/qrcode_group.jpg" alt="企业微信群二维码" style="width:180px;height:180px;display:block;" onerror="this.style.display='none'">
+        </div>
+        <p style="font-size:12px;color:var(--text-dim);">长按识别二维码，加入超级个体社群</p>
+      </div>
+      <div class="footer-actions">
+        <button class="btn btn-outline btn-sm" onclick="location.reload()">重新测评</button>
+        <button class="btn btn-outline btn-sm" onclick="window.print()">打印报告</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+// ============================================================
+//  QUESTION BANK - 200 questions (40 per dimension)
+// ============================================================
+const DIMENSIONS = {
+  WILL: { key:'WILL', name:'愿力', icon:'🔥', desc:'创业动机、坚持度、愿景清晰度' },
+  KARMA:{ key:'KARMA',name:'业力', icon:'🌱', desc:'过往积累、人脉资源、行业经验' },
+  MIND: { key:'MIND', name:'心力', icon:'💎', desc:'心理素质、抗压能力、情绪管理' },
+  ABILITY:{key:'ABILITY',name:'能力', icon:'⚔️', desc:'专业技能、管理能力、决策能力' },
+  HEAL: { key:'HEAL', name:'自愈力',icon:'🔄', desc:'失败恢复、学习成长、适应能力' }
+};
+const DIM_LIST = ['WILL','KARMA','MIND','ABILITY','HEAL'];
+
+const QUESTIONS = {
+  WILL: [
+    "你清楚自己为什么要创业吗？","创业是你唯一的选择还是备选？","你愿意为创业付出全部时间和精力吗？",
+    "即使连续失败三次还会继续尝试吗？","你有一个清晰具体的创业愿景吗？","你对创业成功的渴望超过对稳定的需求吗？",
+    "你愿意为创业降低生活质量吗？","你创业是为了解决问题还是逃避现状？","你相信自己一定能创业成功吗？",
+    "你愿意花5年以上做同一件事吗？","你的创业动机来自内心热爱还是外部压力？","你每天醒来对创业充满期待吗？",
+    "你愿意放弃高薪去创业吗？","创业失败后你还会再次创业吗？","你对创业方向有持续不减的热情吗？",
+    "即使没人支持也会坚持创业吗？","你创业不是为了赚钱而是实现某种价值？","你有一个愿意奋斗10年的目标吗？",
+    "你能描述创业成功后具体的生活画面吗？","你愿意承担家庭的不理解去创业吗？","你从创业本身就能获得快乐吗？",
+    "你经常想象自己创业成功的样子吗？","你愿意用全部积蓄去实现创业梦想吗？","你有一个非做不可的创业理由吗？",
+    "受挫时仍能保持对目标的热情吗？","你的创业目标具体到知道第一步做什么？","你愿意为创业学习全新的技能吗？",
+    "创业对你来说是使命而非工作？","你愿意接受创业初期零收入的状态吗？","你的家人支持你的创业计划吗？",
+    "你清楚创业成功对你人生的真正意义？","你愿意每天工作12小时持续一年吗？","你创业是为了创造价值而非证明什么？",
+    "你对创业方向有坚定的信仰吗？","你能清晰说出要解决什么问题吗？","你愿意放弃社交娱乐投入创业吗？",
+    "你的核心驱动力来自内在而非外界？","你有一个清晰的创业路线图吗？","别人说不适合时你仍然相信自己吗？",
+    "你创业是为了做一件自己认为值得的事？"
+  ],
+  KARMA: [
+    "你在本行业有3年以上积累吗？","人脉圈里有愿意帮你的创业前辈吗？","过去的工作和创业方向直接相关吗？",
+    "你认识至少10个可能成为第一批客户的人？","你曾经主导过从0到1的项目吗？","职业经历积累了可迁移的核心技能吗？",
+    "你在行业内有良好的口碑吗？","过去积累的资源可以直接用于创业吗？","你有过带团队的经验吗？",
+    "你非常了解所在行业的运作规律？","过去的失败让你学到了有价值的教训？","身边有可以给你关键帮助的贵人吗？",
+    "过去5年持续在做与创业方向相关的事？","你有独特的资源优势（渠道/供应链/技术）？","你曾从零建立起一个系统或体系？",
+    "社交圈里有成功创业者可以请教吗？","过去的工作让你积累了解决问题的方法论？","手里有可以直接变现的资源或资产吗？",
+    "你参与过完整的商业闭环吗？","你的专业能力在行业内有竞争力吗？","过去的客户愿意跟着你走吗？",
+    "你了解目标领域的头部玩家怎么运作？","你在压力下完成过重要项目吗？","你有复杂谈判的经验吗？",
+    "过去的成就得到了行业内的认可吗？","你有至少一个可以互补的潜在合伙人？","工作经验让你具备了商业敏感度吗？",
+    "你掌握供应链或交付资源吗？","你有过管理预算或盈亏的经验吗？","你在行业内建立了个人影响力吗？",
+    "你经历过完整的项目周期（启动到结束）？","你的背景让客户愿意为产品付费？","你认识潜在的资金来源吗？",
+    "你懂得如何低成本试错吗？","你有可以立刻加入的骨干人选吗？","你熟悉行业法规和壁垒吗？",
+    "过往经历让你养成了良好的工作习惯？","行业人脉能帮你打开早期市场吗？","你解决过复杂的系统性难题吗？",
+    "你的履历中有关键事件可做创业背书？"
+  ],
+  MIND: [
+    "重大挫折后你通常多久能恢复？","压力下还能保持清晰的判断力吗？","你能坦然面对不确定性和未知风险吗？",
+    "你很少因别人评价而动摇自己的决定？","你有一套自己的情绪调节方法吗？","创业的孤独感你能承受吗？",
+    "你能在混乱环境中保持冷静吗？","你善于在困境中找方案而不是抱怨？","压力下你的睡眠还能保持正常吗？",
+    "你愿意为自己的决定承担全部责任？","被拒绝10次后还能继续第11次吗？","你能接受创业初期的卑微感吗？",
+    "团队士气低落时你能撑住吗？","你很少陷入自我怀疑的负面循环？","面对突发危机能快速做出决策吗？",
+    "你能坦然面对自己的弱点和不足？","你享受克服困难的过程本身吗？","你能忍受长期的不被理解吗？",
+    "你很少因短期挫败否定长期目标？","你的身体状态能支撑高强度创业吗？","你能把批评转化为改进动力？",
+    "关键时刻敢于做出冒险的决定吗？","你有维持心理能量的日常习惯吗？","你能接受大起大落而不失平常心吗？",
+    "你心态开放愿意听取不同意见吗？","极端压力下仍能保持幽默感吗？","你分清哪些该焦虑哪些不值得？",
+    "你有过在绝望时刻坚持到底的经历吗？","你不需要外界认可来维持动力吗？","你接受创业是长期战役吗？",
+    "面对竞争对手的优势不会恐慌吗？","家人朋友认为你心理强大吗？","你善于把大困难拆成小步骤解决吗？",
+    "资金紧张时仍能保持理性决策吗？","你有过从低谷逆势翻盘的经历吗？","你能在创业和家庭间找到心理平衡吗？",
+    "你很少因一次失败全盘否定自己吗？","别人否定时你反而更有动力？","你能接受创业中的灰色地带吗？",
+    "你有自己的精神信念体系支撑吗？"
+  ],
+  ABILITY: [
+    "你能把模糊想法变成可执行计划吗？","你有带领团队达成目标的经验吗？","你善于快速学习一个全新领域吗？",
+    "你能清晰计算出生意的成本和利润吗？","你具备基本的财务管理和预算能力吗？","你善于把复杂问题拆解成步骤吗？",
+    "你独立做出过重要的商业决策吗？","你能把专业能力转化成可售卖的产品吗？","你能设计和优化业务流程吗？",
+    "你具备基础的营销和获客思维吗？","你擅长识别和吸引优秀人才吗？","你能制定并执行清晰的商业计划吗？",
+    "你善于从数据中发现问题和机会吗？","你有成功谈判并达成合作的经历吗？","你了解所在行业的商业模式吗？",
+    "你能独立完成从获客到交付的销售流程？","你善于分配任务并通过他人完成工作？","你具备基本的内容创作能力吗？",
+    "你知道如何建立和管理品牌吗？","你擅长处理多任务并分清优先级？","你能做ROI分析判断项目值不值得吗？",
+    "你具备AI/建站等数字化工具使用能力？","你善于从用户反馈中迭代产品吗？","你知道如何设计MVP吗？",
+    "你擅长制定规则保证团队效率吗？","你具备公开演讲和表达能力吗？","你能在信息不充分时做出判断吗？",
+    "你知道如何做竞品分析和市场调研吗？","你擅长把一个想法讲清楚吗？","你具备供应链管理的基础知识吗？",
+    "你能制定合理的定价策略吗？","你善于利用现有工具解决问题吗？","你具备合同和法律风险意识吗？",
+    "你擅长在不同人之间协调达成共识？","你知道如何做用户画像和需求分析？","你善于把经验总结成方法论吗？",
+    "你具备抗周期思维而非只看眼前？","你知道如何设计激励机制吗？","你擅长利用社交媒体获取关注吗？",
+    "你具备把一个产品复制到另一个市场的能力吗？"
+  ],
+  HEAL: [
+    "重大打击后你能变得更强大吗？","你善于从失败中提炼有价值的教训？","你有一套自己的复盘方法吗？",
+    "失败后能快速调整方向重新出发吗？","你很少因同样原因跌倒两次吗？","你能从别人失败中学习而不必亲自踩坑？",
+    "你善于把负面经历转化为成长养分？","受挫后能及时止损而不是死扛吗？","你对自己有清晰的认知吗？",
+    "你愿意在方向错误时果断放弃沉没成本？","每次低谷后都能找到新动力吗？","你善于在失败后重建自信吗？",
+    "你有一套持续学习和自我更新的机制？","你愿意承认错误并向团队道歉吗？","你能在创业中持续迭代自己的认知吗？",
+    "每次失败后都学到了关键能力吗？","你善于在挫折中发现新机会吗？","失败后不会长时间陷入自责吗？",
+    "你善于借助外部帮助度过难关吗？","你定期回顾反思自己的决策和行动吗？","失败后能保持对自己的基本信任吗？",
+    "你把每次失败看作升级的机会吗？","你能区分运气不好还是能力不足吗？","项目失败后能坦然面对团队吗？",
+    "你善于把过去的伤痛转化为力量吗？","失败后能快速找到新目标吗？","你有一套持续补充能量的方式吗？",
+    "你善于在逆境中发现自己的盲点吗？","你很少因一次失败放弃整个方向吗？","失败后会主动寻求反馈吗？",
+    "你能把否定转化为自我提升的动力吗？","你经历过毁灭性打击并走了出来吗？","你善于在低谷期保持行动吗？",
+    "你会定期更新认知和知识结构吗？","失败后能客观分析原因不找借口吗？","你善于从多角度看问题吗？",
+    "你有自己的能量管理方法吗？","你相信失败是必经之路而非终点吗？","受挫后能迅速找到下一个发力点吗？",
+    "你每一次站起来都比上一次更强吗？"
+  ]
+};
+
+// ============================================================
+//  STATE
+// ============================================================
+const S = {
+  questions: [], currentIdx: 0, answers: [],
+  scores: { WILL:0, KARMA:0, MIND:0, ABILITY:0, HEAL:0 },
+  orderId: null, payPollTimer: null, paid: false
+};
+
+// ============================================================
+//  UTILITIES
+// ============================================================
+function shuffle(a) { for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function selectQuestions() {
+  const q = [];
+  DIM_LIST.forEach(dim => {
+    const p = shuffle([...QUESTIONS[dim]]).slice(0, 12);
+    p.forEach(t => q.push({ dim, text: t }));
+  });
+  return shuffle(q);
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showToast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
+
+// ============================================================
+//  QUIZ
+// ============================================================
+function startQuiz() {
+  S.questions = selectQuestions();
+  S.currentIdx = 0;
+  S.answers = new Array(S.questions.length).fill(null);
+  showSection('section-quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const i = S.currentIdx, q = S.questions[i], total = S.questions.length;
+  document.getElementById('q-number').textContent = `第 ${i+1} 题`;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('current-dim-label').textContent = DIMENSIONS[q.dim].icon + ' ' + DIMENSIONS[q.dim].name;
+  document.getElementById('progress-fill').style.width = ((i+1)/total*100)+'%';
+  document.getElementById('question-progress').textContent = `${i+1} / ${total}`;
+  document.querySelectorAll('.scale-btn').forEach(b => b.classList.toggle('selected', S.answers[i] === parseInt(b.dataset.v)));
+  document.getElementById('prev-btn').disabled = i === 0;
+  document.getElementById('next-btn').textContent = i === total-1 ? '查看报告 →' : '下一题 →';
+  document.getElementById('question-card').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function selectAnswer(v) { S.answers[S.currentIdx] = v; renderQuestion(); }
+
+function nextQuestion() {
+  if (S.answers[S.currentIdx] === null) return showToast('请先选择一个选项');
+  if (S.currentIdx === S.questions.length - 1) { finishQuiz(); return; }
+  S.currentIdx++; renderQuestion();
+}
+
+function prevQuestion() { if(S.currentIdx===0) return; S.currentIdx--; renderQuestion(); }
+
+function finishQuiz() {
+  // Save answers to localStorage
+  localStorage.setItem('xfl_quiz_answers', JSON.stringify({ questions: S.questions, answers: S.answers }));
+  showSection('section-paywall');
+  document.getElementById('pay-btn-area').style.display = 'block';
+  document.getElementById('qrcode-area').style.display = 'none';
+}
+
+// ============================================================
+//  PAYMENT —— 静态收款码模式（人工确认收款）
+//  ★★★ 替换收款码图步骤（董事长提供图后只需 3 步）★★★
+//   ✅ 已替换正式收款码（2026-11-17）：/static/images/qrcode_pay.png
+//   ✅ 微信号已替换为真实微信号（2026-11-17）：XFL18117903163
+//  ★ 后续升级 APIv3 自动支付：从 git 历史找回原 createOrder/startPolling/checkPaid
+// ============================================================
+function showPayQrcode() {
+  document.getElementById('pay-btn-area').style.display = 'none';
+  document.getElementById('qrcode-area').style.display = 'block';
+}
+
+function unlockReport() {
+  // MVP：前端本地解锁（无服务端支付验证，白嫖风险已记录，待升级 APIv3 自动支付）
+  S.paid = true;
+  showReport();
+}
+
+// ============================================================
+//  REPORT
+// ============================================================
+function showReport() {
+  // Load answers from localStorage
+  const saved = JSON.parse(localStorage.getItem('xfl_quiz_answers') || '{}');
+  if (!saved.questions) { showToast('数据异常，请重新测评'); return; }
+  S.questions = saved.questions;
+  S.answers = saved.answers;
+
+  calculateScores();
+  showSection('section-report');
+  generateReport();
+  animateScore();
+
+  // Submit assessment data to server（接口 /api/assessments 待补，404 已 catch 不阻塞）
+  submitAssessment();
+}
+
+function submitAssessment() {
+  const payload = {
+    order_id: S.orderId || '',
+    total_score: parseInt(document.getElementById('total-score').textContent) || 0,
+    level: document.getElementById('score-level').textContent || '',
+    scores: {},
+  };
+  DIM_LIST.forEach(function(d) {
+    payload.scores[d] = S.scores[d] || 0;
+  });
+  fetch('/api/assessments', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload),
+  }).then(function(r){ return r.json(); }).then(function(d) {
+    if (!d.ok) console.warn('测评数据提交失败:', d.msg);
+  }).catch(function(e){ console.warn('测评数据提交异常:', e); });
+}
+
+function calculateScores() {
+  const dimScores = { WILL:[], KARMA:[], MIND:[], ABILITY:[], HEAL:[] };
+  S.questions.forEach((q,i) => {
+    if (S.answers[i] !== null) dimScores[q.dim].push(S.answers[i]);
+  });
+  DIM_LIST.forEach(dim => {
+    const arr = dimScores[dim];
+    S.scores[dim] = arr.length > 0 ? Math.round(arr.reduce((a,b)=>a+b,0)/(arr.length*5)*100) : 0;
+  });
+}
+
+function generateReport() {
+  const total = Math.round(DIM_LIST.reduce((s,d)=>s+S.scores[d],0)/5);
+  document.getElementById('total-score').textContent = total;
+
+  const getLevel = t => {
+    if(t>=85) return '🏆 创业预备军 · 你天生适合创业';
+    if(t>=70) return '🌟 潜力创业者 · 补足短板即可起航';
+    if(t>=55) return '🌱 成长型选手 · 需要系统打磨';
+    if(t>=40) return '💪 蓄力阶段 · 建议先积累再出发';
+    return '📚 探索阶段 · 适合先学习和准备';
+  };
+  document.getElementById('score-level').textContent = getLevel(total);
+
+  // Dimension bars
+  const c = document.getElementById('dim-scores-container');
+  c.innerHTML = '';
+  DIM_LIST.forEach(dim => {
+    const info = DIMENSIONS[dim], sc = S.scores[dim];
+    const cmt = sc>=80?'优势维度，是你的核心武器': sc>=60?'良好，有提升空间': sc>=40?'需要重点加强':'短板明显，建议优先提升';
+    c.innerHTML += `<div class="dim-item"><div class="dim-header"><span class="dim-name">${info.icon} ${info.name}</span><span class="dim-score">${sc}%</span></div><div class="dim-bar"><div class="fill" style="width:${sc}%"></div></div><div class="dim-desc">${cmt}</div></div>`;
+  });
+
+  // Find weakest
+  let wk = DIM_LIST[0], ws = S.scores[DIM_LIST[0]];
+  DIM_LIST.forEach(d => { if(S.scores[d] < ws) { wk = d; ws = S.scores[d]; } });
+
+  const advice = {
+    WILL:'你的创业愿力不足，建议先想清楚"为什么是你"做这件事。试着回答三个问题：①你非做不可的理由是什么？②你愿意为此放弃什么？③成功的画面具体是什么样？想明白了再出发。',
+    KARMA:'你的行业积累和资源需要补充。建议先不急着全职创业，可以边工作边在目标领域深耕，积累人脉和行业认知，找到自己的独特资源优势再启动。',
+    MIND:'你的心力有待锻炼。创业是长期的心理战，建议建立三个习惯：①每天15分钟冥想或独处；②建立自己的支持系统（导师/同伴）；③定期做压力释放。心力是练出来的。',
+    ABILITY:'你的商业能力需要系统提升。建议先从基础知识补齐短板：学习最小可行产品设计、基础财务模型、获客转化。能力不足可以用团队补，但要能听懂专业的话。',
+    HEAL:'你的自愈力需要加强。创业一定会失败，区别在于恢复速度。建议：①建立复盘习惯（每次失败必写3条教训）；②设置止损线；③把每次挫折看作一次升级的机会。'
+  };
+  document.getElementById('suggestion-text').innerHTML =
+    `<p><strong>核心结论：</strong>${getLevel(total)}</p>
+     <p><strong>重点关注：</strong>${DIMENSIONS[wk].icon} ${DIMENSIONS[wk].name}（${ws}%），这是你最需要提升的维度。</p>
+     <p>${advice[wk]}</p>
+     <p><strong>三条行动建议：</strong></p><ul>
+     <li>不要等到完美再出发——先做一个最小版本去测试市场</li>
+     <li>找到你的第一个付费用户，比一百个"还不错"的评价更有价值</li>
+     <li>找人补你的短板，不要试图成为全能选手</li></ul>
+     <p>📌 记住：创业不是百米冲刺，是一场马拉松。这份报告不是判决书，是你的起点地图。</p>`;
+
+  renderRadar();
+}
+
+function renderRadar() {
+  const cv = document.getElementById('radarChart'), ctx = cv.getContext('2d');
+  const W=cv.width, H=cv.height, cx=W/2, cy=H/2, R=Math.min(W,H)*0.35, LV=5;
+  ctx.clearRect(0,0,W,H);
+  for(let l=1;l<=LV;l++){const r=R/LV*l;ctx.beginPath();for(let i=0;i<5;i++){const a=(-Math.PI/2)+Math.PI*2/5*i,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)}ctx.closePath();ctx.strokeStyle=l===LV?'rgba(201,168,76,0.3)':'rgba(255,255,255,0.08)';ctx.lineWidth=l===LV?1:.5;ctx.stroke()}
+  DIM_LIST.forEach((d,i)=>{const a=(-Math.PI/2)+Math.PI*2/5*i;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=.5;ctx.stroke()});
+  ctx.beginPath();DIM_LIST.forEach((d,i)=>{const s=S.scores[d]/100,r=R*s,a=(-Math.PI/2)+Math.PI*2/5*i,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});ctx.closePath();ctx.fillStyle='rgba(201,168,76,0.15)';ctx.fill();ctx.strokeStyle='#c9a84c';ctx.lineWidth=2;ctx.stroke();
+  DIM_LIST.forEach((d,i)=>{const s=S.scores[d]/100,r=R*s,a=(-Math.PI/2)+Math.PI*2/5*i,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);ctx.fillStyle='#c9a84c';ctx.fill()});
+  ctx.font='12px -apple-system, "PingFang SC", sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  DIM_LIST.forEach((d,i)=>{const lR=R+24,a=(-Math.PI/2)+Math.PI*2/5*i,x=cx+lR*Math.cos(a),y=cy+lR*Math.sin(a);ctx.fillStyle='#e8e4dc';ctx.fillText(DIMENSIONS[d].name,x,y);const sR=R*(S.scores[d]/100)-16,sx=cx+sR*Math.cos(a),sy=cy+sR*Math.sin(a);ctx.fillStyle='#c9a84c';ctx.font='11px sans-serif';ctx.fillText(S.scores[d]+'%',sx,sy);ctx.font='12px -apple-system, "PingFang SC", sans-serif'});
+}
+
+function animateScore() {
+  const el = document.getElementById('total-score');
+  const t = Math.round(DIM_LIST.reduce((s,d)=>s+S.scores[d],0)/5);
+  let c=0; const st=setInterval(()=>{c+=Math.max(1,Math.floor(t/40));if(c>=t){c=t;clearInterval(st)}el.textContent=c},30);
+}
+
+// ============================================================
+//  KEYBOARD
+// ============================================================
+document.addEventListener('keydown', e => {
+  if(e.key>='1'&&e.key<='5') selectAnswer(parseInt(e.key));
+  if((e.key==='Enter'||e.key===' ')&&document.getElementById('section-quiz').classList.contains('active')){e.preventDefault();nextQuestion()}
+  if(e.key==='ArrowLeft') prevQuestion();
+  if(e.key==='ArrowRight') nextQuestion();
+});
+
+// ============================================================
+//  INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('total-test-count').textContent = Math.floor(Math.random()*30)+15;
+  // Check if user has a pending paid order
+  const paidOrders = JSON.parse(localStorage.getItem('xfl_paid_orders')||'[]');
+  const saved = JSON.parse(localStorage.getItem('xfl_quiz_answers')||'{}');
+  if (paidOrders.length > 0 && saved.questions) {
+    // They already paid before! Let them see report
+    S.questions = saved.questions;
+    S.answers = saved.answers;
+    calculateScores();
+    showSection('section-report');
+    generateReport();
+    animateScore();
+  }
+});
+</script>
+</body>
+</html>
