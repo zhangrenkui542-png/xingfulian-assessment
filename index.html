@@ -237,12 +237,12 @@ body::before {
         <div class="qrcode-box">
           <img id="qrcode-img" src="static/images/qrcode_pay.png" alt="微信收款码">
         </div>
-        <p style="font-size:13px;color:var(--text-dim);margin-top:12px;">请用微信扫码支付 ¥19.9，支付后点击下方按钮解锁报告</p>
+        <p style="font-size:13px;color:var(--text-dim);margin-top:12px;">请用微信扫码支付 ¥19.9，支付后加微信解锁完整报告</p>
         <div class="wechat-line" style="margin-top:10px;font-size:14px;">
-          支付遇到问题？加微信：<strong id="wechat-id">XFL18117903163</strong>
+          付款后加微信 <strong id="wechat-id">XFL18117903163</strong>，发付款截图，解锁「完整报告 + 一次人工诊断」
         </div>
         <button class="btn btn-gold btn-block" onclick="unlockReport()" style="margin-top:14px;">
-          我已支付 ¥19.9，解锁报告 →
+          我已支付 ¥19.9，去加微信解锁 →
         </button>
       </div>
 
@@ -276,16 +276,14 @@ body::before {
       <div class="suggestions" id="suggestions-container">
         <h3>💡 AI诊断建议</h3>
         <div id="suggestion-text"></div>
+        <p style="font-size:13px;color:var(--text-dim);margin-top:14px;padding-top:14px;border-top:1px dashed var(--border);">想拿到完整报告 + 一次人工诊断？加微信 <strong>XFL18117903163</strong>，发付款截图，董事长一对一解读。</p>
       </div>
       <div class="upsell">
         <h3>🎯 你的下一步：成为超级个体</h3>
         <p>这份报告只是起点。幸赋链699标准化课程体系<br>用12大模块48课时，帮你从测评到落地。</p>
         <div class="price">¥699 <small style="font-size:14px;color:var(--text-dim);">原价 ¥1,999</small></div>
-        <p style="font-size:13px;color:var(--text-dim);margin-bottom:16px;">扫码添加企业微信，了解详细课程信息</p>
-        <div style="background:#fff;display:inline-block;padding:8px;border-radius:8px;margin-bottom:12px;">
-          <img src="static/images/qrcode_group.jpg" alt="企业微信群二维码" style="width:180px;height:180px;display:block;" onerror="this.style.display='none'">
-        </div>
-        <p style="font-size:12px;color:var(--text-dim);">长按识别二维码，加入超级个体社群</p>
+        <p style="font-size:13px;color:var(--text-dim);margin-bottom:16px;">加微信 <strong>XFL18117903163</strong>，了解详细课程信息</p>
+        <p style="font-size:12px;color:var(--text-dim);">添加好友备注「699」，一对一了解课程</p>
       </div>
       <div class="footer-actions">
         <button class="btn btn-outline btn-sm" onclick="location.reload()">重新测评</button>
@@ -479,9 +477,18 @@ function showPayQrcode() {
 }
 
 function unlockReport() {
-  // MVP：前端本地解锁（无服务端支付验证，白嫖风险已记录，待升级 APIv3 自动支付）
+  // 锁单钩子：付款后加微信 XFL18117903163 发付款截图，解锁「完整报告 + 一次人工诊断」
+  // 页内同时给基础报告（分数+雷达图+分维度）；完整报告 + 人工诊断由董事长微信一对一交付（P1 链链自动出报告落地前）
+  showWechatGuide();
   S.paid = true;
   showReport();
+}
+
+function showWechatGuide() {
+  // 醒目引导：加微信发付款截图，拿「完整报告 + 一次人工诊断」
+  const el = document.getElementById('wechat-id');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  showToast('付款后请加微信 XFL18117903163，发付款截图，解锁完整报告 + 一次人工诊断');
 }
 
 // ============================================================
